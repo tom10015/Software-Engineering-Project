@@ -1,8 +1,8 @@
-const ROOMS=[{name:"Student Center A",capacity:50},{name:"Library Meeting Room",capacity:20},{name:"Auditorium",capacity:150},{name:"Science Hall 201",capacity:35}];
-const KEY="campus-event-demo-v1";
+const ROOMS=[{name:"Student Center A",capacity:50},{name:"Library Meeting Room",capacity:20},{name:"Auditorium",capacity:150},{name:"Tapia 208",capacity:35}];
+const KEY="campus-event-demo-v2";
 const initial=[
 {id:"sample-1",organizer:"Student Activities",title:"Welcome Week Social",room:"Student Center A",date:"2026-11-05",start:"15:00",end:"17:00",attendees:40,description:"Meet students and learn about campus clubs.",status:"approved"},
-{id:"sample-2",organizer:"Computer Science Club",title:"Coding Club Meetup",room:"Science Hall 201",date:"2026-11-09",start:"16:00",end:"17:30",attendees:22,description:"Practice coding and share project ideas.",status:"approved"},
+{id:"sample-2",organizer:"Computer Science Club",title:"Coding Club Meetup",room:"Tapia 208",date:"2026-11-09",start:"16:00",end:"17:30",attendees:22,description:"Practice coding and share project ideas.",status:"approved"},
 {id:"sample-3",organizer:"Campus Events Team",title:"Movie Night",room:"Auditorium",date:"2026-11-12",start:"19:00",end:"21:00",attendees:90,description:"Join us for a campus movie night.",status:"approved"}
 ];
 let entries;

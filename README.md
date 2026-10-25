@@ -1,4 +1,4 @@
-# Campus Event Scheduling System — Demo Website
+# Saint Leo Campus Event Scheduling System — Demo Website
 
 A simple front-end demonstration of the Campus Event Scheduling System for a software engineering project.
 
@@ -28,3 +28,7 @@ This is a **prototype**, not a production application:
 - There is no server, database, or real email notifications.
 - It does not include an actual GitHub Actions CI pipeline.
 - It is not suitable for real campus reservations without a backend, login, and server-side conflict validation.
+
+## Updated design
+- Saint Leo University project heading and simple green/gold styling (not an official university website).
+- Tapia 208 replaces Science Hall 201, including sample events.
