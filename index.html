@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Campus Event Scheduling System</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="brand">🎓 Campus Events <span>Demo</span></div><nav><a href="#events">Events</a><a href="#request">Request a Room</a><a href="#admin">Admin</a></nav></header>
+<main>
+<section class="hero"><div><p class="eyebrow">CAMPUS EVENT SCHEDULING SYSTEM</p><h1>Make campus events easier to plan.</h1><p>Browse upcoming events, request a room, and track approvals — all in one place.</p><a class="primary button" href="#request">Schedule an Event</a></div><div class="hero-art"><span>📅</span><strong>Plan. Reserve. Connect.</strong><small>Simple scheduling for campus life</small></div></section>
+<section class="stats"><article><b id="eventCount">0</b><span>Approved events</span></article><article><b id="pendingCount">0</b><span>Pending requests</span></article><article><b id="roomCount">0</b><span>Available rooms</span></article></section>
+<section id="events" class="section"><div class="section-head"><div><p class="eyebrow">CAMPUS CALENDAR</p><h2>Upcoming events</h2></div><input id="search" placeholder="Search events..." aria-label="Search events"></div><div id="eventList" class="cards"></div></section>
+<section id="request" class="section"><p class="eyebrow">ROOM RESERVATIONS</p><h2>Request an event</h2><p class="muted">Submit your event details. Requests remain pending until an administrator approves them.</p><form id="requestForm" class="form"><label>Organizer name<input name="organizer" required placeholder="Your name"></label><label>Event name<input name="title" required placeholder="e.g. Coding Club Meetup"></label><label>Room<select name="room" id="roomSelect" required></select></label><label>Date<input type="date" name="date" id="date" required></label><label>Start time<input type="time" name="start" required></label><label>End time<input type="time" name="end" required></label><label>Expected attendees<input type="number" name="attendees" min="1" required placeholder="25"></label><label>Description<textarea name="description" rows="3" placeholder="What is your event about?"></textarea></label><div class="form-actions"><button class="primary" type="submit">Submit Request</button><p id="formMessage" role="status"></p></div></form></section>
+<section id="admin" class="section"><div class="section-head"><div><p class="eyebrow">ADMINISTRATION</p><h2>Review requests</h2></div><span class="demo-tag">Demo admin view — no login</span></div><p class="muted">Approve or reject requests. The system prevents approved reservations from overlapping in the same room.</p><div id="requestList" class="request-list"></div></section>
+</main><footer>Campus Event Scheduling System · Software Engineering Project Demo <button id="resetDemo" class="text-button">Reset demo data</button></footer>
+<script src="app.js"></script></body></html>
