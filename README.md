@@ -1,34 +1,31 @@
-# Saint Leo Campus Event Scheduling System — Demo Website
-
-A simple front-end demonstration of the Campus Event Scheduling System for a software engineering project.
+# Saint Leo Campus Event Scheduling System
+Student project website using GitHub Pages and a Supabase-hosted database.
 
 ## Features
-- Browse and search approved campus events
-- Submit event requests with room, date, time, and attendance
-- Demo administrator view to approve or reject requests
-- Prevent overlapping **approved** reservations for the same room
-- Check room capacity and time input
-- Save changes in the browser using `localStorage`
-- Reset demo data
+- Public calendar for approved campus events
+- Student sign-in and event request submission
+- My Requests page section to track approvals
+- Administrator portal for approving or rejecting event requests
+- Real persistent shared database, with server-side room capacity and double-booking checks
+- Tapia 208 room and Saint Leo-inspired green/gold theme
 
-## Run locally
-Open `index.html` in a browser. No installation or server required.
+## Setup (required for real saving)
+GitHub Pages only hosts the front end. You also need a Supabase project for logins and data.
 
-## Publish on GitHub Pages
-1. Create a new GitHub repository.
-2. Upload `index.html`, `style.css`, and `app.js` to the repository root.
-3. In **Settings → Pages**, choose **Deploy from a branch**.
-4. Select the `main` branch and `/ (root)` folder, then save.
-5. GitHub will show the website URL when published.
+1. Create a Supabase project at https://supabase.com/dashboard.
+2. Paste the contents of `schema.sql` into its **SQL Editor** and run it in a new database.
+3. Under project API settings, copy the **Project URL** and **public publishable/anon key**.
+4. Edit `config.js` with those two values. **Never use a secret or service_role key.**
+5. In Supabase Authentication > URL Configuration, set the Site URL to `https://tom10015.github.io/Software-Engineering-Project/`. If email confirmation is on, add the same URL to redirects.
+6. Enable GitHub Pages for this repository: Settings > Pages > Deploy from a branch > main > /(root).
+7. Register a user account on the website, and confirm your email if requested.
+8. To make your account an admin, run this in Supabase SQL Editor, replacing the email:
+   `update public.profiles set role='admin' where id=(select id from auth.users where email='YOUR_EMAIL@example.com');`
+9. Sign out and sign back in, then test the administrator portal.
 
-## Important limitations
-This is a **prototype**, not a production application:
-- The admin view has no authentication.
-- Data is saved only in each visitor's browser, not shared across devices.
-- There is no server, database, or real email notifications.
-- It does not include an actual GitHub Actions CI pipeline.
-- It is not suitable for real campus reservations without a backend, login, and server-side conflict validation.
+## Testing
+Create a student reservation; approve it as admin; confirm that it appears on the calendar.
+Then create another overlapping reservation for the same room/date/time; the database must reject approval.
 
-## Updated design
-- Saint Leo University project heading and simple green/gold styling (not an official university website).
-- Tapia 208 replaces Science Hall 201, including sample events.
+## Notes
+Do not collect real private student information. This is an unofficial academic prototype, not an approved Saint Leo University application. The website has not been integrated with university authentication. No automated CI workflows are configured yet.
