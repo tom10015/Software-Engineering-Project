@@ -13,8 +13,8 @@ function render(){
  $("roomSelect").innerHTML='<option value="">Choose a room</option>'+rooms.map(r=>`<option value="${escapeHTML(r.id)}">${escapeHTML(r.name)} (${r.capacity} seats)</option>`).join("");
  $("events").innerHTML=approved.filter(e=>e.event_date>=dateKey(new Date())).map(e=>card(e)).join("")||"<p>No upcoming approved events yet.</p>";
  $("myRequests").innerHTML=user?"<h3>My Requests</h3>"+(mine.map(e=>card(e)).join("")||"<p>You have not submitted any requests.</p>"):"";
- $("adminHint").textContent=isAdmin?"Review pending room requests below.":"Only administrators can review event requests.";
- $("adminRequests").innerHTML=isAdmin?(all.map(e=>card(e,true)).join("")||"<p>No requests yet.</p>"):"";
+
+
  $("monthLabel").textContent=month.toLocaleDateString(undefined,{month:"long",year:"numeric"});
  let first=new Date(month.getFullYear(),month.getMonth(),1);first.setDate(first.getDate()-first.getDay());
  $("grid").innerHTML=Array.from({length:42},(_,i)=>{let d=new Date(first);d.setDate(first.getDate()+i);const key=dateKey(d),ev=approved.filter(e=>e.event_date===key);return `<div class="day ${d.getMonth()!==month.getMonth()?"out":""} ${key===dateKey(new Date())?"today":""}"><b>${d.getDate()}</b>${ev.slice(0,2).map(e=>`<span class="event-label" title="${escapeHTML(e.title)}">${escapeHTML(e.title)}</span>`).join("")}${ev.length>2?'<span class="event-label">More events…</span>':""}</div>`}).join("");
@@ -51,11 +51,6 @@ $("eventForm").addEventListener("submit",async ev=>{
  const {error}=await db.from("events").insert({title:v.title,room_id:v.room_id,event_date:v.event_date,start_time:v.start_time,end_time:v.end_time,attendees:+v.attendees,description:v.description||"",organizer_id:user.id});
  if(error)alertUser("Request failed: "+error.message);else{ev.target.reset();alertUser("Request saved. Waiting for administrator approval.");await refresh()}
 });
-$("adminRequests").onclick=async ev=>{
- const b=ev.target.closest("button[data-id]");if(!b||!isAdmin)return;b.disabled=true;
- const {error}=await db.rpc("review_event",{event_id:b.dataset.id,new_status:b.dataset.status});
- alertUser(error?"Approval failed: "+error.message:"Reservation updated.");await refresh();
-};
 $("eventForm").elements.event_date.min=dateKey(new Date());
 if(!ready){alertUser("To enable live accounts and saving, connect Supabase in config.js. Instructions are in README.md.");render()}
 else{db.auth.onAuthStateChange((_event,session)=>{user=session?.user||null;setTimeout(refresh,0)});db.auth.getUser().then(({data})=>{user=data.user;refresh()})}

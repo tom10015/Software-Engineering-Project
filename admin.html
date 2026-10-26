@@ -1,0 +1,9 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Portal | Saint Leo Campus Events</title><link rel="stylesheet" href="style.css"></head><body>
+<header><div class="wrap bar"><a class="brand" href="index.html"><span class="emblem">SL</span><span>Saint Leo University<small>Campus Event Scheduling System</small></span></a><nav><a href="index.html">Back to Campus Events</a></nav></div></header>
+<main class="wrap"><section class="hero"><p class="eyebrow">RESTRICTED STAFF AREA</p><h1>Admin Portal</h1><p>Review and manage campus room requests. Authorized administrators only.</p></section>
+<p id="adminNotice" class="notice" hidden role="status"></p>
+<section id="adminLogin"><h2>Administrator Sign In</h2><p>Use your administrator account. Regular student accounts cannot access reservation management.</p>
+<form id="adminLoginForm" class="admin-login-form"><label>Email<input type="email" id="adminEmail" autocomplete="username" required></label><label>Password<input type="password" id="adminPassword" autocomplete="current-password" required></label><button type="submit">Sign In</button></form></section>
+<section id="adminDenied" hidden><h2>Access denied</h2><p>This account does not have administrator permission.</p><button id="deniedSignOut">Sign out and try another account</button></section>
+<section id="adminDashboard" hidden><div class="heading"><div><p class="eyebrow">MANAGE RESERVATIONS</p><h2>Event Requests</h2></div><button id="adminSignOut" class="outline">Sign Out</button></div><p>Approve or reject pending room requests. Conflicting approved bookings are blocked by the database.</p><div id="adminRequests"></div></section></main>
+<footer><div class="wrap">Saint Leo University — Student software engineering project <small>Not an official university service.</small></div></footer><script type="module" src="admin.js"></script></body></html>
