@@ -2,7 +2,7 @@ import {createClient} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 import {SUPABASE_URL,SUPABASE_PUBLIC_KEY} from "./config.js";
 const $=id=>document.getElementById(id),ready=SUPABASE_URL.startsWith("https://")&&!SUPABASE_PUBLIC_KEY.startsWith("YOUR_");
 const db=ready?createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY):null;
-let user=null,isAdmin=false,rooms=[],approved=[],mine=[],all=[],notifications=[],month=new Date();
+let user=null,isAdmin=false,rooms=[],approved=[],mine=[],all=[],month=new Date();
 const escapeHTML=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const dateKey=d=>[d.getFullYear(),String(d.getMonth()+1).padStart(2,"0"),String(d.getDate()).padStart(2,"0")].join("-");
 const alertUser=t=>{$("notice").textContent=t;$("notice").hidden=false};
@@ -15,9 +15,6 @@ function render(){
  $("myRequests").innerHTML=user?"<h3>My Requests</h3>"+(mine.map(e=>card(e)).join("")||"<p>You have not submitted any requests.</p>"):"";
 
 
- $("notificationsSection").hidden=!user;
- $("notificationsList").innerHTML=notifications.length?notifications.map(n=>`<article class="entry"><div><strong>${escapeHTML(n.kind.toUpperCase())}</strong><p>${escapeHTML(n.message)}</p><small>${escapeHTML(new Date(n.created_at).toLocaleString())}</small></div>${n.read_at?"":`<button class="outline" data-read="${escapeHTML(n.id)}">Mark read</button>`}</article>`).join(""):"<p>No notifications yet.</p>";
- $("unreadCount").textContent=notifications.filter(n=>!n.read_at).length;
  $("monthLabel").textContent=month.toLocaleDateString(undefined,{month:"long",year:"numeric"});
  let first=new Date(month.getFullYear(),month.getMonth(),1);first.setDate(first.getDate()-first.getDay());
  $("grid").innerHTML=Array.from({length:42},(_,i)=>{let d=new Date(first);d.setDate(first.getDate()+i);const key=dateKey(d),ev=approved.filter(e=>e.event_date===key);return `<div class="day ${d.getMonth()!==month.getMonth()?"out":""} ${key===dateKey(new Date())?"today":""}"><b>${d.getDate()}</b>${ev.slice(0,2).map(e=>`<span class="event-label" title="${escapeHTML(e.title)}">${escapeHTML(e.title)}</span>`).join("")}${ev.length>2?'<span class="event-label">More events…</span>':""}</div>`}).join("");
@@ -29,13 +26,9 @@ async function refresh(){
  if(user){
   const [m,p]=await Promise.all([db.from("events").select("*,rooms(name)").eq("organizer_id",user.id).order("created_at",{ascending:false}),db.from("profiles").select("role").eq("id",user.id).single()]);
   mine=m.data||[];isAdmin=p.data?.role==="admin";
-  const n=await db.from("notifications").select("id,kind,message,created_at,read_at").order("created_at",{ascending:false}).limit(50);
-  notifications=n.data||[];if(n.error)alertUser("Notifications: "+n.error.message);
   if(isAdmin){const a=await db.from("events").select("*,rooms(name)").order("created_at",{ascending:false});all=a.data||[]}else all=[];
- }else{mine=[];all=[];notifications=[];isAdmin=false}render();
+ }else{mine=[];all=[];isAdmin=false}render();
 }
-$("notificationsList").onclick=async e=>{const b=e.target.closest("button[data-read]");if(!b||!db)return;b.disabled=true;const {error}=await db.rpc("mark_notification_read",{notification_id:b.dataset.read});if(error)alertUser(error.message);await refresh();};
-$("refreshNotifications").onclick=()=>refresh();
 $("authBtn").onclick=async()=>{if(user)await db.auth.signOut();else $("authDialog").showModal()};
 $("closeDialog").onclick=()=>$("authDialog").close();
 async function auth(register){
