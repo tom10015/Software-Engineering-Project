@@ -23,6 +23,9 @@ $("adminLoginForm").onsubmit=async e=>{
  await refresh();
 };
 async function signOut(){if(db)await db.auth.signOut();$("adminPassword").value="";view("login")}
+$("adminRefresh").onclick=refresh;
+window.addEventListener("focus",()=>{if(!document.hidden)refresh()});
+document.addEventListener("visibilitychange",()=>{if(!document.hidden)refresh()});
 $("adminSignOut").onclick=signOut;$("deniedSignOut").onclick=signOut;
 $("adminRequests").onclick=async e=>{
  const b=e.target.closest("button[data-id]");if(!b)return;
