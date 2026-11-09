@@ -15,9 +15,11 @@ function render(){
  $("myRequests").innerHTML=user?"<h3>My Requests</h3>"+(mine.map(e=>card(e)).join("")||"<p>You have not submitted any requests.</p>"):"";
 
 
- $("notificationsSection").hidden=!user;
+ $("notificationBellWrap").hidden=!user;
  $("notificationsList").innerHTML=notifications.length?notifications.map(n=>`<article class="entry"><div><strong>${escapeHTML(n.kind.toUpperCase())}</strong><p>${escapeHTML(n.message)}</p><small>${escapeHTML(new Date(n.created_at).toLocaleString())}</small></div>${n.read_at?"":`<button class="outline" data-read="${escapeHTML(n.id)}">Mark read</button>`}</article>`).join(""):"<p>No notifications yet.</p>";
- $("unreadCount").textContent=notifications.filter(n=>!n.read_at).length;
+ const unread=notifications.filter(n=>!n.read_at).length;
+ $("unreadCount").textContent=unread>99?"99+":unread;
+ $("unreadCount").hidden=unread===0;
  $("monthLabel").textContent=month.toLocaleDateString(undefined,{month:"long",year:"numeric"});
  let first=new Date(month.getFullYear(),month.getMonth(),1);first.setDate(first.getDate()-first.getDay());
  $("grid").innerHTML=Array.from({length:42},(_,i)=>{let d=new Date(first);d.setDate(first.getDate()+i);const key=dateKey(d),ev=approved.filter(e=>e.event_date===key);return `<div class="day ${d.getMonth()!==month.getMonth()?"out":""} ${key===dateKey(new Date())?"today":""}"><b>${d.getDate()}</b>${ev.slice(0,2).map(e=>`<span class="event-label" title="${escapeHTML(e.title)}">${escapeHTML(e.title)}</span>`).join("")}${ev.length>2?'<span class="event-label">More events…</span>':""}</div>`}).join("");
@@ -36,6 +38,25 @@ async function refresh(){
 }
 $("notificationsList").onclick=async e=>{const b=e.target.closest("button[data-read]");if(!b||!db)return;b.disabled=true;const {error}=await db.rpc("mark_notification_read",{notification_id:b.dataset.read});if(error)alertUser(error.message);await refresh();};
 $("refreshNotifications").onclick=()=>refresh();
+$("notificationBell").onclick=()=>{
+ const panel=$("notificationsPanel");
+ panel.hidden=!panel.hidden;
+ $("notificationBell").setAttribute("aria-expanded",String(!panel.hidden));
+ if(!panel.hidden)refresh();
+};
+document.addEventListener("click",e=>{
+ const wrap=$("notificationBellWrap");
+ if(!wrap.hidden&&!wrap.contains(e.target)){
+  $("notificationsPanel").hidden=true;
+  $("notificationBell").setAttribute("aria-expanded","false");
+ }
+});
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape"){
+  $("notificationsPanel").hidden=true;
+  $("notificationBell").setAttribute("aria-expanded","false");
+ }
+});
 $("authBtn").onclick=async()=>{if(user)await db.auth.signOut();else $("authDialog").showModal()};
 $("closeDialog").onclick=()=>$("authDialog").close();
 async function auth(register){
