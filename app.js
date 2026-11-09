@@ -34,7 +34,7 @@ async function refresh(){
   if(isAdmin){const a=await db.from("events").select("*,rooms(name)").order("created_at",{ascending:false});all=a.data||[]}else all=[];
  }else{mine=[];all=[];notifications=[];isAdmin=false}render();
 }
-$("notificationsList").onclick=async e=>{const b=e.target.closest("button[data-read]");if(!b||!db)return;b.disabled=true;const {error}=await db.from("notifications").update({read_at:new Date().toISOString()}).eq("id",b.dataset.read);if(error)alertUser(error.message);await refresh();};
+$("notificationsList").onclick=async e=>{const b=e.target.closest("button[data-read]");if(!b||!db)return;b.disabled=true;const {error}=await db.rpc("mark_notification_read",{notification_id:b.dataset.read});if(error)alertUser(error.message);await refresh();};
 $("refreshNotifications").onclick=()=>refresh();
 $("authBtn").onclick=async()=>{if(user)await db.auth.signOut();else $("authDialog").showModal()};
 $("closeDialog").onclick=()=>$("authDialog").close();
