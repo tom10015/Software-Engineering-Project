@@ -1,0 +1,24 @@
+name: Send campus event emails
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send queued event emails
+        env:
+          DISPATCH_TOKEN: ${{ secrets.EMAIL_DISPATCH_TOKEN }}
+        run: |
+          if [ -z "$DISPATCH_TOKEN" ]; then
+            echo "Set EMAIL_DISPATCH_TOKEN in repository Actions secrets."
+            exit 1
+          fi
+          curl --fail-with-body --show-error --silent --retry 2 \
+            -X POST 'https://fmtfskcgnlxusipaxdog.supabase.co/functions/v1/send-campus-event-emails' \
+            -H "Authorization: Bearer $DISPATCH_TOKEN" \
+            -H 'Content-Type: application/json' \
+            -d '{}'
