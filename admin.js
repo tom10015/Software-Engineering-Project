@@ -41,6 +41,18 @@ $("adminRequests").onclick=async e=>{
  }else{
   ({error}=await db.rpc("review_event",{event_id:b.dataset.id,new_status:b.dataset.status}));
  }
- notice(error?error.message:"Request updated.");await refresh();
+ if(error){notice(error.message)}
+ else if(b.dataset.status==="approved"||b.dataset.action==="edit"||b.dataset.action==="cancel"){
+  // Deliver event emails immediately after the database has saved the change.
+  // The scheduled GitHub workflow remains a backup if Brevo is unavailable.
+  const {data:delivery,error:deliveryError}=await db.functions.invoke("send-campus-event-emails",{body:{reason:"admin-event-change"}});
+  if(deliveryError||delivery?.failed){
+   console.warn("Immediate event email dispatch was unsuccessful; the queue will retry.",deliveryError||delivery);
+   notice("Event updated. Email notifications were queued and will retry automatically.");
+  }else{
+   notice(`Event updated. ${Number(delivery?.sent||0)} email notification(s) submitted to Brevo.`);
+  }
+ }else notice("Request updated.");
+ await refresh();
 };
 refresh();
